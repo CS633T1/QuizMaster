@@ -10,7 +10,9 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+explore.ipynb
 *.local
+*.env
 
 # Editor directories and files
 .vscode/*
