@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development node server.js",
+    "dev": "cross-env NODE_ENV=development node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "cross-env NODE_ENV=production node server.js",
     "lint": "next lint"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
     "typescript": "^5"
