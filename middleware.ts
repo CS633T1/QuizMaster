@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
   if (!session && request.nextUrl.pathname.startsWith("/user")) {
     console.log("redirected to login!");
-    return NextResponse.redirect(new URL("/login", request.url));
+    // return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();
