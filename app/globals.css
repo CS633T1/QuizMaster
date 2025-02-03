@@ -40,3 +40,7 @@ a {
     color-scheme: dark;
   }
 }
+
+.white-text .MuiInputBase-input {
+  color: white;
+}

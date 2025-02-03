@@ -1,6 +1,6 @@
 import next from "next";
 import express from "express";
-import queryLLM from "./api/queryLLM.js";
+import queryLLM from "./api/restrictQueryLLM.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -12,7 +12,7 @@ global.APIresponse = {};
 
 server.use(express.json());
 server.use("/", express.static("dist"));
-server.post("/query", queryLLM);
+server.post("/api/query", queryLLM);
 
 // Simple endpoint to return "Hello, World!"
 server.get("/api/hello", (req, res) => {
