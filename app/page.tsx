@@ -21,15 +21,6 @@ export default function Home() {
 
   return (
     <Container>
-      <Typography variant="h3" align="center">
-        QuizMaster
-      </Typography>
-      <Button variant="outlined" onClick={() => router.push("/signup")}>
-        Signup
-      </Button>
-      <Button variant="outlined" onClick={() => router.push("/login")}>
-        Login
-      </Button>
       <Box>
         <TextField
           id="filled-multiline-static"
@@ -39,7 +30,6 @@ export default function Home() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           variant="filled"
-          className="white-text"
           fullWidth
         />
       </Box>
@@ -54,7 +44,6 @@ export default function Home() {
           rows={20}
           value={output}
           variant="filled"
-          className="white-text"
           fullWidth
         />
       </Box>
