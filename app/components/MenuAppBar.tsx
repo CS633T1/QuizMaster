@@ -13,14 +13,49 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { Router } from "next/router";
 
 export default function MenuAppBar() {
   const { user, logOut } = useFirebaseAuth(); //if there is a user, then you are logged in
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileOpen, setMobileOpen] = React.useState(false);
   const router = useRouter();
+
+  // Different Nav Options to different users
+  const navMap_options = {
+    guest: {
+      Home: "/",
+    },
+    user: {
+      DashBoard: "/user/dashboard",
+      Settings: "/user/settings",
+    },
+    admin: {
+      DashBoard: "/user/dashboard",
+      Settings: "/user/settings",
+      Admin: "/user/adminpanel",
+    },
+  };
+
+  // Based on some configurations, choose which navMap to render
+  const navMap = user !== null ? navMap_options?.user : navMap_options?.guest;
+
+  const drawerWidth = 240;
+
+  const handleDrawerToggle = () => {
+    setMobileOpen((prevState) => !prevState);
+  };
 
   // Logs user out, redirect to home
   const handleLogOut = () => {
@@ -37,13 +72,62 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
 
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        QuizMaster
+      </Typography>
+      <Divider />
+      <List>
+        {Object?.keys(navMap).map((item) => (
+          <ListItem key={item} disablePadding>
+            <ListItemButton
+              sx={{ textAlign: "center" }}
+              onClick={() => handleMenuRouting(item)}
+            >
+              <ListItemText primary={item} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
+  const handleMenuRouting = (key: string): void => {
+    const routeUrl = (navMap as any)?.[key];
+    console.log("Naving to Route", routeUrl);
+    // we should validate the route but ....its ok
+    router.push(routeUrl);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+            onClick={handleDrawerToggle}
+          >
+            <MenuIcon />
+          </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             QuizMaster
           </Typography>
+          <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            {Object?.keys(navMap).map((item) => (
+              <Button
+                key={item}
+                onClick={() => handleMenuRouting(item)}
+                sx={{ color: "#fff" }}
+              >
+                {item}
+              </Button>
+            ))}
+          </Box>
           {!user && (
             <Button color="inherit" onClick={() => router.push("/login")}>
               Login
@@ -92,6 +176,25 @@ export default function MenuAppBar() {
           )}
         </Toolbar>
       </AppBar>
+      <nav>
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+      </nav>
     </Box>
   );
 }
