@@ -40,6 +40,9 @@ export default function Signup() {
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       setEmailError("Email is invalid");
       return;
+    } else if (email.length > 20) {
+      setEmailError("Email must be less than 20 characters");
+      return;
     }
 
     if (!password) {
