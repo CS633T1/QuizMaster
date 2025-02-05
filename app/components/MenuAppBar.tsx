@@ -15,14 +15,18 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 
 export default function MenuAppBar() {
-  const [auth, setAuth] = React.useState(true);
+  const { user, logOut } = useFirebaseAuth(); //if there is a user, then you are logged in
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const router = useRouter();
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
+  // Logs user out, redirect to home
+  const handleLogOut = () => {
+    console.log("Log out hit ");
+    logOut();
+    router.push("/");
   };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,13 +44,13 @@ export default function MenuAppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             QuizMaster
           </Typography>
-          {!auth && (
+          {!user && (
             <Button color="inherit" onClick={() => router.push("/login")}>
               Login
             </Button>
           )}
-          {auth && (
-            <div>
+          {user && (
+            <Box sx={{ display: "flex" }}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
@@ -54,9 +58,18 @@ export default function MenuAppBar() {
                 aria-haspopup="true"
                 onClick={handleMenu}
                 color="inherit"
+                sx={{ gap: "10px" }}
               >
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  {user?.email}
+                </Typography>
                 <AccountCircle />
               </IconButton>
+
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}
@@ -73,9 +86,9 @@ export default function MenuAppBar() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Quizzes</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={handleLogOut}>Logout</MenuItem>
               </Menu>
-            </div>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
