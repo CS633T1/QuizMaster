@@ -11,7 +11,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/");
+      router.push("/login");
     }
   }, [user, loading, router]);
 

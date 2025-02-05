@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Button,
@@ -10,35 +10,32 @@ import {
   Box,
   Paper,
   Grid,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Divider,
-  Switch,
   TextField,
 } from "@mui/material";
-import {
-  AccountCircle,
-  Notifications,
-  Security,
-  DeleteForever,
-} from "@mui/icons-material";
+import { DeleteForever } from "@mui/icons-material";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 
 export default function UserSettings() {
   const router = useRouter();
-  const { user, logOut, deleteAccount } = useFirebaseAuth(); //if there is a user, then you are logged in
+  const { user, logOut, deleteAccount, loading } = useFirebaseAuth(); //if there is a user, then you are logged in
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleOpenDialog = () => setOpenDialog(true);
   const handleCloseDialog = () => setOpenDialog(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   const handleDelete = async () => {
     console.log("Deleting account...");
@@ -84,6 +81,9 @@ export default function UserSettings() {
     }
   };
 
+  if (!user) {
+    return null; // This will prevent any flash of content before redirect
+  }
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
@@ -103,7 +103,8 @@ export default function UserSettings() {
                   id="email"
                   name="email"
                   disabled
-                  value={user?.email}
+                  value={email}
+                  onChange={() => setEmail(user?.email as string)}
                 />
               </Box>
               <Box sx={{ mt: 3 }}>
