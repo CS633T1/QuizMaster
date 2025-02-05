@@ -5,6 +5,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
+  deleteUser,
 } from "firebase/auth";
 import { auth } from "../firebase/config";
 
@@ -41,6 +42,10 @@ export function useFirebaseAuth() {
     return sendPasswordResetEmail(auth, email);
   };
 
+  const deleteAccount = () => {
+    return deleteUser(user as User);
+  };
+
   return {
     user,
     loading,
@@ -48,5 +53,6 @@ export function useFirebaseAuth() {
     signIn,
     logOut,
     resetPassword,
+    deleteAccount,
   };
 }
