@@ -1,35 +1,39 @@
 import jsonGPT from "./jsonGPT.js";
 
 const queryLLM = async (req, res) => {
-  try {
-    const instructions = `Create a list of 10 multiple choice questions based on the provided text. 
-    Each question should have 4 answer choices numbered 1 through 4. 
-    Provide this list as a json array named "questions" in the following format:
-    {
-      "questions": [
-        {
-          "question": "Question text here",
-          "options": [
-            "option 1",
-            "option 2",
-            "option 3",
-            "option 4"
-          ],
-          "answer": 1
-        },
-      ]
+    try {
+        console.log('Received request body:', req.body);
+        const prompt = req.body.prompt;
+        
+        if (!prompt) {
+            console.error('No prompt provided');
+            return res.status(400).json({
+                error: true,
+                message: "No prompt provided"
+            });
+        }
+
+        console.log('Calling jsonGPT with prompt:', prompt);
+        const answer = await jsonGPT(prompt);
+        console.log('Received answer from jsonGPT:', answer);
+        
+        if (!answer.success) {
+            return res.status(500).json(answer);
+        }
+        
+        return res.json({
+            success: true,
+            data: answer.data
+        });
+    } catch (error) {
+        console.error('Query Error:', error);
+        return res.status(500).json({
+            success: false,
+            error: true,
+            message: "Failed to process the request",
+            details: error.message
+        });
     }
-    PROVIDED TEXT: `;
-    const prompt = instructions + req.body.prompt;
-    const answer = await jsonGPT(prompt);
-    res.json({ success: true, data: answer });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      error: true,
-      message: "Failed to process the request",
-    });
-  }
 };
 
 export default queryLLM;
