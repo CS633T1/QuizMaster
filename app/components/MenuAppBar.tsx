@@ -40,6 +40,7 @@ export default function MenuAppBar() {
     user: {
       DashBoard: "/user/dashboard",
       Settings: "/user/settings",
+      "Past Quiz Scores": "/user/past-quizzes",
     },
     admin: {
       DashBoard: "/user/dashboard",
