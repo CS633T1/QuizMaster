@@ -83,7 +83,7 @@ export const quizAPI = {
   submitQuestion: async (
     question: string
   ): Promise<QuizResponse<LLMResponse>> => {
-    return fetchAPI<QuizResponse<LLMResponse>>("/query", {
+    return fetchAPI<QuizResponse<LLMResponse>>("/api/query", {
       method: "POST",
       body: JSON.stringify({ prompt: question }),
     });
