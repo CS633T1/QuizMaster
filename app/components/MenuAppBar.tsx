@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
-import { Router } from "next/router";
+
 
 export default function MenuAppBar() {
   const { user, logOut } = useFirebaseAuth(); //if there is a user, then you are logged in

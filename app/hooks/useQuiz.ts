@@ -21,6 +21,7 @@ export const useQuiz = () => {
       if (!response.success || !response.data) {
         throw new Error(response.message || "Failed to process request");
       }
+      console.log("llm response", response);
       return response;
     } catch (err) {
       const errorMessage =
