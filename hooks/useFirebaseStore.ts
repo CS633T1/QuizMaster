@@ -6,6 +6,7 @@ import {
   getDocs,
   DocumentData,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { LLMResponse } from "@/app/services/api";
@@ -91,5 +92,18 @@ export const saveQuiz = async (
   // Else this does not exist in the DB, make new entry.
   else {
     return saveNewQuiz(data as QuizData);
+  }
+};
+
+export const deleteQuiz = async (quizId: string) => {
+  if (!quizId) return;
+
+  const quizRef = doc(db, "quizzes", quizId); // Reference to the document
+
+  try {
+    await deleteDoc(quizRef);
+    console.log(`Quiz with ID ${quizId} deleted successfully.`);
+  } catch (error) {
+    console.error("Error deleting quiz:", error);
   }
 };
