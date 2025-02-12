@@ -25,7 +25,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 
-
 export default function MenuAppBar() {
   const { user, logOut } = useFirebaseAuth(); //if there is a user, then you are logged in
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -39,12 +38,10 @@ export default function MenuAppBar() {
     },
     user: {
       DashBoard: "/user/dashboard",
-      Settings: "/user/settings",
-      "Past Quiz Scores": "/user/past-quizzes",
+      Quizzes: "/user/past-quizzes",
     },
     admin: {
       DashBoard: "/user/dashboard",
-      Settings: "/user/settings",
       Admin: "/user/adminpanel",
     },
   };
@@ -74,8 +71,12 @@ export default function MenuAppBar() {
   };
 
   const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
+    <Box onClick={() => handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography
+        variant="h6"
+        sx={{ my: 2, cursor: "pointer" }}
+        onClick={() => router.push("/")}
+      >
         QuizMaster
       </Typography>
       <Divider />
@@ -110,12 +111,17 @@ export default function MenuAppBar() {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, display: { xs: "block", sm: "none" } }}
             onClick={handleDrawerToggle}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, cursor: "pointer" }}
+            onClick={() => router.push("/")}
+          >
             QuizMaster
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
@@ -170,7 +176,9 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Quizzes</MenuItem>
+                <MenuItem onClick={() => router.push("/user/settings")}>
+                  Settings
+                </MenuItem>
                 <MenuItem onClick={handleLogOut}>Logout</MenuItem>
               </Menu>
             </Box>
