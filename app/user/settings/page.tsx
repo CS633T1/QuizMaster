@@ -93,21 +93,14 @@ export default function UserSettings() {
         <Grid container spacing={3}>
           <Grid item xs={12} md={9}>
             <Paper sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 Account Settings
               </Typography>
               <Box component="form" noValidate autoComplete="off">
-                <TextField
-                  margin="normal"
-                  fullWidth
-                  id="email"
-                  name="email"
-                  disabled
-                  value={user?.email}
-                />
+                <Typography variant="h6">{user?.email}</Typography>
               </Box>
               <Box sx={{ mt: 3 }}>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h5" gutterBottom>
                   Reset Password
                 </Typography>
                 <Button
@@ -121,7 +114,7 @@ export default function UserSettings() {
               </Box>
               <Divider sx={{ my: 3 }} />
               <Box>
-                <Typography variant="h6" gutterBottom color="error">
+                <Typography variant="h5" gutterBottom color="error">
                   Danger Zone
                 </Typography>
                 <Button

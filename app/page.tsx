@@ -325,10 +325,7 @@ export default function Home() {
               <Button
                 variant="contained"
                 onClick={() => setSaveQuizModalOpen(true)}
-                disabled={
-                  Object.keys(selectedAnswers).length !==
-                  quizData.questions.length
-                }
+                disabled={score == null}
               >
                 Save Quiz
               </Button>
