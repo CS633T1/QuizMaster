@@ -30,7 +30,7 @@ export interface UserStatistics {
 
 // LLM response interface
 export interface LLMResponse {
-  questions: {
+  questions?: {
     question: string;
     options: string[];
     answer: number;

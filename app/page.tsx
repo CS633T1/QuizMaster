@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -22,94 +22,16 @@ import {
 import { useRouter } from "next/navigation";
 import { useQuiz } from "./hooks/useQuiz";
 import { LLMResponse } from "./services/api";
-import { QuizData, saveQuiz } from "@/hooks/useFirebaseStore";
+import { QuizData, getQuizData, saveQuiz } from "@/hooks/useFirebaseStore";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
+import { SaveQuizModal } from "./components/SaveQuizModal";
 
 export default function Home() {
   const router = useRouter();
   const { user } = useFirebaseAuth(); //if there is a user, then you are logged in
   const { loading, error, submitQuestion } = useQuiz();
   const [inputText, setInputText] = useState("");
-  const [quizData, setQuizData] = useState<LLMResponse | null>({
-    questions: [
-      {
-        question: "Which party did Taneti Vanitha belong to initially?",
-        options: [
-          "Telugu Desam Party",
-          "YSR Congress Party",
-          "BJP",
-          "Congress",
-        ],
-        answer: 1,
-      },
-      {
-        question:
-          "In which district was Taneti Vanitha a Member of Andhra Pradesh Legislative Assembly?",
-        options: ["Vishakhapatnam", "West Godavari", "Kurnool", "Krishna"],
-        answer: 2,
-      },
-      {
-        question:
-          "What post did Taneti Vanitha hold in the Government of Andhra Pradesh in 2022?",
-        options: [
-          "Minister of Agriculture",
-          "Minister of Home Affairs",
-          "Minister of Education",
-          "Minister of Transport",
-        ],
-        answer: 2,
-      },
-      {
-        question:
-          "How many votes did she win by in the 2019 Indian general election?",
-        options: ["15000", "20000", "25000", "30000"],
-        answer: 3,
-      },
-      {
-        question: "Which ministry was Vanitha appointed to in April 2022?",
-        options: [
-          "Women and Child Welfare",
-          "Home and Disaster Management",
-          "Health and Family Welfare",
-          "Agriculture and Rural Development",
-        ],
-        answer: 2,
-      },
-      {
-        question:
-          "Who did Taneti Vanitha lose her seat to in the General Elections 2024?",
-        options: [
-          "Kethineni Srinivas",
-          "Muppidi Venkateswara Rao",
-          "Devineni Avinash",
-          "Racha Venkatarao",
-        ],
-        answer: 2,
-      },
-      {
-        question: "Which party did Taneti Vanitha defect to in November 2012?",
-        options: ["YSR Congress Party", "BJP", "Congress", "TRS"],
-        answer: 1,
-      },
-      {
-        question:
-          "What was the margin of votes by which she lost in General Elections 2024?",
-        options: ["10000", "20000", "25000", "30000"],
-        answer: 3,
-      },
-      {
-        question: "Which district did Taneti Vanitha contest from in 2019?",
-        options: ["Vishakhapatnam", "West Godavari", "Kurnool", "Krishna"],
-        answer: 2,
-      },
-      {
-        question:
-          "In which year did Vanitha become Minister for Home and Disaster Management?",
-        options: ["2020", "2021", "2022", "2023"],
-        answer: 3,
-      },
-    ],
-  });
+  const [quizData, setQuizData] = useState<LLMResponse | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<{
     [key: number]: number;
   }>({});
@@ -121,6 +43,22 @@ export default function Home() {
   //For SnackBar
   const [isSnackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMsg, setSnackBarMsg] = useState("");
+  //For Retrieving quiz
+  const [quizId, setQuizId] = useState<string>("");
+
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      const queryParams = new URLSearchParams(location.search);
+      const quizId_local = queryParams?.get("quizId") as string;
+      setQuizId(quizId_local);
+      if (quizId_local) {
+        const quizData = await getQuizData(quizId_local);
+        setQuizData(quizData as LLMResponse);
+      }
+    };
+
+    fetchQuizData();
+  }, [location]);
 
   const handleSubmit = async () => {
     if (!inputText.trim()) return;
@@ -156,10 +94,11 @@ export default function Home() {
   const handleCheckAnswers = () => {
     if (!quizData) return;
 
-    const totalQuestions = quizData.questions.length;
-    const correctAnswers = quizData.questions.reduce((acc, question, index) => {
-      return acc + (selectedAnswers[index] === question.answer - 1 ? 1 : 0);
-    }, 0);
+    const totalQuestions = quizData?.questions?.length || 1;
+    const correctAnswers =
+      quizData?.questions?.reduce((acc, question, index) => {
+        return acc + (selectedAnswers[index] === question.answer - 1 ? 1 : 0);
+      }, 0) || 0;
 
     setScore((correctAnswers / totalQuestions) * 100);
     setShowResults(true);
@@ -174,10 +113,12 @@ export default function Home() {
       quizTitle: quizTitle,
       userId: (user && user?.email) || "",
       questions: quizData?.questions,
-      userScore: score, //latest score is saved
+      score: score, //latest score iqs saved
     };
 
-    let res = await saveQuiz(data);
+    // If we have quizId in the url query param, then we call update, ELSE we should call normal save
+    let res = await saveQuiz(data, quizId as string);
+    console.log("res", res);
     // Save Quiz Succeeds
     if (res?.["id"]) {
       setSaveQuizModalOpen(false);
@@ -190,29 +131,17 @@ export default function Home() {
     }
   };
 
-  const SaveQuizModal = (
-    <Dialog open={saveQuizModalOpen}>
-      <DialogContent
-        sx={{ display: "flex", flexDirection: "column", gap: "10px" }}
-      >
-        <Typography variant="h5" align="center" gutterBottom>
-          Enter Quiz Title
-        </Typography>
-        <TextField onChange={(e) => setQuizTitle(e?.target?.value)} />
-        <Button variant="contained" onClick={handleSaveQuiz}>
-          Save Quiz
-        </Button>
-      </DialogContent>
-    </Dialog>
-  );
-
   return (
     <Container maxWidth="md">
       <Typography variant="h3" align="center" gutterBottom>
         Generate Quiz with LLM
       </Typography>
 
-      {SaveQuizModal}
+      <SaveQuizModal
+        isOpen={saveQuizModalOpen}
+        handleSetText={setQuizTitle}
+        handleOnSubmit={handleSaveQuiz}
+      />
 
       <Snackbar
         open={isSnackBarOpen}
@@ -249,7 +178,6 @@ export default function Home() {
           {loading ? <CircularProgress size={24} /> : "Generate Quiz"}
         </Button>
       </Box>
-
       {quizData && quizData.questions && (
         <Box sx={{ mb: 4 }}>
           <Typography variant="h5" gutterBottom>

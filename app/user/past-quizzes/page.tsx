@@ -17,15 +17,14 @@ export default function PastQuizzes() {
       router.push("/");
     }
     const fetchData = async () => {
-      user && setData(await getPastQuiz(user))
-    }
+      user && setData(await getPastQuiz(user));
+    };
     fetchData();
   }, [user, loading, router]);
 
   const handleGetPastQuizzes = async () => {
-    user && await getPastQuiz(user);
+    user && (await getPastQuiz(user));
   };
-
 
   if (!user) {
     return null; // This will prevent any flash of content before redirect
@@ -37,7 +36,7 @@ export default function PastQuizzes() {
         Past Quizzes
       </Typography>
 
-      <QuizTable data={data}/>
+      <QuizTable data={data} />
     </Container>
   );
 }
