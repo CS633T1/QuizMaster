@@ -1,59 +1,42 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Typography, Button, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useFirebaseAuth } from "../../../hooks/useFirebaseAuth";
+import { getPastQuiz } from "@/hooks/useFirebaseStore";
+import QuizTable from "@/app/components/QuizTable";
 
 export default function PastQuizzes() {
-  const { user, loading, logOut } = useFirebaseAuth();
+  const { user, loading } = useFirebaseAuth();
   const router = useRouter();
+  const [data, setData] = useState<any>();
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/");
     }
+    const fetchData = async () => {
+      user && setData(await getPastQuiz(user));
+    };
+    fetchData();
   }, [user, loading, router]);
 
-  const handleLogout = async () => {
-    try {
-      await logOut();
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+  const handleGetPastQuizzes = async () => {
+    user && (await getPastQuiz(user));
   };
-
-  if (loading) {
-    return (
-      <Container
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Container>
-    );
-  }
 
   if (!user) {
     return null; // This will prevent any flash of content before redirect
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main">
       <Typography component="h1" variant="h5" sx={{ mt: 4, mb: 2 }}>
-        User Dashboard
+        Past Quizzes
       </Typography>
-      <Typography variant="body1" sx={{ mb: 2 }}>
-        You are logged in as: {user.email}
-      </Typography>
-      <Button variant="contained" onClick={handleLogout}>
-        Log Out
-      </Button>
+
+      <QuizTable data={data} />
     </Container>
   );
 }
