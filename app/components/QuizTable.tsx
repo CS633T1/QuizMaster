@@ -10,7 +10,8 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { Replay, Edit, Delete } from "@mui/icons-material";
+// import { Replay, Edit, Delete } from "@mui/icons-material";
+import { Replay, Edit, Delete, ContentCopy } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import { SaveQuizModal } from "./SaveQuizModal";
 import { useState } from "react";
@@ -78,6 +79,12 @@ const QuizTable = (props: QuizTableProps) => {
     window.location.reload();
   };
 
+  const handleCopyLink = (id: string) => {
+    const quizLink = `${window.location.origin}/quiz/?quizId=${id}`;
+    navigator.clipboard.writeText(quizLink);
+    console.log(`Copied link: ${quizLink}`);
+  };
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -121,6 +128,14 @@ const QuizTable = (props: QuizTableProps) => {
                       color="error"
                     >
                       <Delete />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Copy Quiz Link">
+                    <IconButton
+                      onClick={() => handleCopyLink(row.id)}
+                      color="primary"
+                    >
+                      <ContentCopy />
                     </IconButton>
                   </Tooltip>
                 </TableCell>
