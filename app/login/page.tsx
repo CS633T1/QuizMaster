@@ -115,7 +115,7 @@ export default function Login() {
               Forgot password?
             </Link>
             <Link variant="body2" href="/register">
-              {"Don't have an account? Sign Up"}
+              {"Don't have an account?"}
             </Link>
           </Box>
         </Box>
