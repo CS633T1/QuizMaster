@@ -39,6 +39,7 @@ export default function Home() {
   const [score, setScore] = useState<number | null>(null);
   const [quizTitle, setQuizTitle] = useState<String>("");
   const [saveQuizModalOpen, setSaveQuizModalOpen] = useState<boolean>(false);
+  const [showTopicError, setShowTopicError] = useState<boolean>(false);
 
   //For SnackBar
   const [isSnackBarOpen, setSnackBarOpen] = useState(false);
@@ -69,6 +70,7 @@ export default function Home() {
       setSelectedAnswers({});
       setShowResults(false);
       setScore(null);
+      setShowTopicError(false);
 
       const result = await submitQuestion(inputText);
       console.log("Received result:", result);
@@ -76,6 +78,9 @@ export default function Home() {
       if (result?.success && result.data?.questions) {
         console.log("Setting quiz data:", result.data);
         setQuizData(result.data);
+      } else if (result?.success && result.data?.["topic-error"] === "true") {
+        console.log("Topic error");
+        setShowTopicError(true);
       } else {
         throw new Error(result?.message || "Failed to generate quiz");
       }
@@ -177,6 +182,17 @@ export default function Home() {
         >
           {loading ? <CircularProgress size={24} /> : "Generate Quiz"}
         </Button>
+
+        {showTopicError && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            Topic Error: Context must be related to one of the following
+            software topics: Globalization, Requirements, Software Engineering
+            Management, Software Configuration Management, Estimation, Agile,
+            Peer Reviews, Security, Design, Software Tools, System Test, Unit
+            Tests, Continuous Delivery, Process Architecture, or Process
+            Improvement.
+          </Alert>
+        )}
       </Box>
       {quizData && quizData.questions && (
         <Box sx={{ mb: 4 }}>

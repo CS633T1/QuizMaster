@@ -1,40 +1,97 @@
-// import jsonGPT from "./jsonGPT.js";
+import OpenAI from "openai";
+import dotenv from "dotenv";
 
-// const queryLLM = async (req, res) => {
-//   try {
-//     const instructions = `Create a list of 10 multiple choice questions based on the provided text. 
-//     All questions must be realted to one of the following software topics: Globalization, Requirements, Software Engineering Management,
-//     Software Configuration Management, Estimation, Agile, Peer Reviews, Security, Design, Software Tools, System Test, Unit Tests,
-//     Continuous Delivery, Process Architecture, or Process Improvement. If the provided text is not related to any of the topics, 
-//     return an error message with a key of "topic-error" and a value of "true".
+dotenv.config();
+const apiKey = process.env.OPEN_AI_KEY;
 
-//     Each question should have 4 answer choices numbered 1 through 4. 
-//     Provide this list as a json array named "questions" in the following format:
-//     {
-//       "questions": [
-//         {
-//           "question": "Question text here",
-//           "options": [
-//             "option 1",
-//             "option 2",
-//             "option 3",
-//             "option 4"
-//           ],
-//           "answer": 1
-//         },
-//       ]
-//     }
-//     PROVIDED TEXT: `;
-//     const prompt = instructions + req.body.prompt;
-//     const answer = await jsonGPT(prompt);
-//     res.json({ success: true, data: answer });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       error: true,
-//       message: "Failed to process the request",
-//     });
-//   }
-// };
+if (!apiKey) {
+  throw new Error("OpenAI API key is not set in environment variables");
+}
 
-// export default queryLLM;
+// Initialize OpenAI
+const openai = new OpenAI({
+  apiKey: apiKey,
+});
+
+const jsonGPT = async (prompt) => {
+  try {
+    console.log("Starting OpenAI API call with prompt:", prompt);
+
+    const instructions = `You are a quiz generator. Create a list of 10 multiple choice questions based on the provided text.
+        All questions must be related to one of the following software topics: Globalization, Requirements, Software Engineering Management,
+        Software Configuration Management, Estimation, Agile, Peer Reviews, Security, Design, Software Tools, System Test, Unit Tests,
+        Continuous Delivery, Process Architecture, or Process Improvement. If the provided text is not related to any of the topics, 
+        return an error message with a key of "topic-error" and a value of "true".
+        Return ONLY a JSON object in the following format, without any additional text or markdown:
+        {
+          "questions": [
+            {
+              "question": "Question text here",
+              "options": [
+                "option 1",
+                "option 2",
+                "option 3",
+                "option 4"
+              ],
+              "answer": 1
+            }
+          ]
+        }
+        
+        Rules:
+        1. The answer field should be a number from 1 to 4, representing the correct option's position
+        2. Return ONLY the JSON object, no other text
+        3. Do not use markdown formatting
+        4. Ensure the JSON is valid
+        
+        Text to generate questions from: ${prompt}`;
+
+    console.log("Sending instructions to OpenAI...");
+
+    const completion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content: "You are a quiz generator that outputs only json.",
+        },
+        { role: "user", content: instructions },
+      ],
+      model: "gpt-3.5-turbo",
+      response_format: { type: "json_object" },
+    });
+
+    // Generate content
+    console.log("Received result from OpenAI");
+
+    const response = completion.choices[0].message.content;
+    console.log("Raw response text:", response);
+    // Parse the JSON response
+    try {
+      const parsedJson = JSON.parse(response);
+      console.log("Successfully parsed JSON:", parsedJson);
+      return {
+        success: true,
+        data: parsedJson,
+      };
+    } catch (parseError) {
+      console.error("Error parsing JSON:", parseError);
+      return {
+        success: false,
+        error: true,
+        message: "Failed to parse response from AI service",
+        details: parseError.message,
+      };
+    }
+  } catch (error) {
+    console.error("OpenAI API Error:", error);
+    return {
+      success: false,
+      error: true,
+      message: "An error occurred while processing your request",
+      details: error.message,
+    };
+  }
+};
+
+console.log("API Key present:", !!process.env.OPEN_AI_KEY);
+export default jsonGPT;
