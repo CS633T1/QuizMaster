@@ -38,6 +38,7 @@ export default function Home() {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState<number | null>(null);
   const [quizTitle, setQuizTitle] = useState<String>("");
+  const [pageTitle, setPageTitle] = useState<String>("Generate Quiz with LLM");
   const [saveQuizModalOpen, setSaveQuizModalOpen] = useState<boolean>(false);
 
   //For SnackBar
@@ -54,6 +55,9 @@ export default function Home() {
       if (quizId_local) {
         const quizData = await getQuizData(quizId_local);
         setQuizData(quizData as LLMResponse);
+        if (quizData?.quizTitle) {
+          setPageTitle("Retaking Quiz: " + quizData.quizTitle);
+        }
       }
     };
 
@@ -76,6 +80,7 @@ export default function Home() {
       if (result?.success && result.data?.questions) {
         console.log("Setting quiz data:", result.data);
         setQuizData(result.data);
+        setPageTitle("Quiz Questions");
       } else {
         throw new Error(result?.message || "Failed to generate quiz");
       }
@@ -134,7 +139,7 @@ export default function Home() {
   return (
     <Container maxWidth="md">
       <Typography variant="h3" align="center" gutterBottom>
-        Generate Quiz with LLM
+        {pageTitle}
       </Typography>
 
       <SaveQuizModal
@@ -181,10 +186,6 @@ export default function Home() {
       )}
       {quizData && quizData.questions && (
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Quiz Questions
-          </Typography>
-
           {quizData.questions.map((question, qIndex) => (
             <Paper key={qIndex} sx={{ p: 3, mb: 2 }}>
               <Typography variant="h6" gutterBottom>
