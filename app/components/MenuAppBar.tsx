@@ -37,11 +37,11 @@ export default function MenuAppBar() {
       Home: "/",
     },
     user: {
-      DashBoard: "/user/dashboard",
+      Home: "/",
       Quizzes: "/user/past-quizzes",
     },
     admin: {
-      DashBoard: "/user/dashboard",
+      Home: "/",
       Admin: "/user/adminpanel",
     },
   };

@@ -43,9 +43,11 @@ export interface QuizResponse<T = LLMResponse> {
   data: T;
   message?: string;
 }
-
+const dev = process.env.NODE_ENV !== "production";
 // API Base URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_BASE_URL = dev
+  ? "http://localhost:3000"
+  : process.env.NEXT_PUBLIC_API_URL;
 
 // Helper function for API calls
 async function fetchAPI<T>(

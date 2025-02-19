@@ -48,7 +48,7 @@ const QuizTable = (props: QuizTableProps) => {
     // Find that quiz in the DB, update ONLY the score with the new one.
     // If you don't update the old DB entry, it will simply create a new one with their new score so they'll have dupe.
     console.log(`Retake quiz with id ${id}`);
-    router.push(`/?quizId=${id}`);
+    router.push(`/quiz/?quizId=${id}`);
   };
 
   const handleSave = async () => {

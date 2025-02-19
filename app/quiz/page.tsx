@@ -20,11 +20,11 @@ import {
   SnackbarProps,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useQuiz } from "./hooks/useQuiz";
-import { LLMResponse } from "./services/api";
+import { useQuiz } from "../hooks/useQuiz";
+import { LLMResponse } from "../services/api";
 import { QuizData, getQuizData, saveQuiz } from "@/hooks/useFirebaseStore";
 import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
-import { SaveQuizModal } from "./components/SaveQuizModal";
+import { SaveQuizModal } from "../components/SaveQuizModal";
 
 export default function Home() {
   const router = useRouter();
@@ -38,6 +38,7 @@ export default function Home() {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState<number | null>(null);
   const [quizTitle, setQuizTitle] = useState<String>("");
+  const [pageTitle, setPageTitle] = useState<String>("");
   const [saveQuizModalOpen, setSaveQuizModalOpen] = useState<boolean>(false);
 
   //For SnackBar
@@ -54,35 +55,14 @@ export default function Home() {
       if (quizId_local) {
         const quizData = await getQuizData(quizId_local);
         setQuizData(quizData as LLMResponse);
+        if (quizData?.quizTitle) {
+          setPageTitle("Retaking Quiz: " + quizData.quizTitle);
+        }
       }
     };
 
     fetchQuizData();
   }, [location]);
-
-  const handleSubmit = async () => {
-    if (!inputText.trim()) return;
-
-    try {
-      console.log("Submitting text:", inputText);
-      setQuizData(null);
-      setSelectedAnswers({});
-      setShowResults(false);
-      setScore(null);
-
-      const result = await submitQuestion(inputText);
-      console.log("Received result:", result);
-
-      if (result?.success && result.data?.questions) {
-        console.log("Setting quiz data:", result.data);
-        setQuizData(result.data);
-      } else {
-        throw new Error(result?.message || "Failed to generate quiz");
-      }
-    } catch (error) {
-      console.error("Error submitting question:", error);
-    }
-  };
 
   const handleAnswerSelect = (questionIndex: number, answerIndex: number) => {
     setSelectedAnswers((prev) => ({
@@ -134,7 +114,7 @@ export default function Home() {
   return (
     <Container maxWidth="md">
       <Typography variant="h3" align="center" gutterBottom sx={{ pt: 2 }}>
-        Generate Quiz with LLM
+        {pageTitle}
       </Typography>
 
       <SaveQuizModal
@@ -149,41 +129,8 @@ export default function Home() {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         message={snackBarMsg}
       />
-
-      <Box sx={{ mb: 4 }}>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          label="Paste your text here to generate quiz questions"
-          variant="outlined"
-          disabled={loading}
-          sx={{ mb: 2 }}
-        />
-
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={loading || !inputText.trim()}
-        >
-          {loading ? <CircularProgress size={24} /> : "Generate Quiz"}
-        </Button>
-      </Box>
       {quizData && quizData.questions && (
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            Quiz Questions
-          </Typography>
-
           {quizData.questions.map((question, qIndex) => (
             <Paper key={qIndex} sx={{ p: 3, mb: 2 }}>
               <Typography variant="h6" gutterBottom>
