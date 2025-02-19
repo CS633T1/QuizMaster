@@ -9,6 +9,7 @@ import {
   Paper,
   IconButton,
   Tooltip,
+  Button,
 } from "@mui/material";
 import { Replay, Edit, Delete } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ import { SaveQuizModal } from "./SaveQuizModal";
 import { useState } from "react";
 import { deleteQuiz, saveQuiz } from "@/hooks/useFirebaseStore";
 import DeleteQuizModal from "./DeleteQuizModal";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 export interface QuizItem {
   id: string;
@@ -36,6 +38,12 @@ const QuizTable = (props: QuizTableProps) => {
   const [id, setId] = useState<string>("");
 
   const [newTitle, setNewTitle] = useState<string>("");
+  const [copied, setCopied] = useState(false);
+  const dev = process.env.NODE_ENV !== "production";
+  // API Base URL
+  const base_url = dev
+    ? "http://localhost:3000"
+    : process.env.NEXT_PUBLIC_API_URL;
 
   const router = useRouter();
 
@@ -76,6 +84,16 @@ const QuizTable = (props: QuizTableProps) => {
     console.log(`Delete quiz with id ${id}`);
     await deleteQuiz(id);
     window.location.reload();
+  };
+
+  const handleCopy = async (id: string) => {
+    try {
+      await navigator.clipboard.writeText(base_url + `/quiz?quizId=${id}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset "copied" state after 2 seconds
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
   };
 
   return (
@@ -123,6 +141,14 @@ const QuizTable = (props: QuizTableProps) => {
                       <Delete />
                     </IconButton>
                   </Tooltip>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleCopy(row.id)}
+                    startIcon={<ContentCopyIcon />}
+                  >
+                    {copied ? "Copied!" : "Copy Link"}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
