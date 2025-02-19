@@ -42,8 +42,9 @@ export function useFirebaseAuth() {
     return sendPasswordResetEmail(auth, email);
   };
 
-  const deleteAccount = () => {
-    return deleteUser(user as User);
+  const deleteAccount = (user: User) => {
+    console.log(user);
+    // return deleteUser(user);
   };
 
   return {
