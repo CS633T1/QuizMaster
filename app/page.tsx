@@ -138,7 +138,7 @@ export default function Home() {
 
   return (
     <Container maxWidth="md">
-      <Typography variant="h3" align="center" gutterBottom>
+      <Typography variant="h3" align="center" gutterBottom sx={{ pt: 2 }}>
         {pageTitle}
       </Typography>
 
