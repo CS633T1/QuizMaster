@@ -36,7 +36,7 @@ export default function Login() {
       const res = await signIn(email, password);
       console.log("login!", res);
       // Redirect to dashboard (Past Quizzes) after login
-      router.push("/user/dashboard");
+      router.push("/");
     } catch (error) {
       if (error instanceof FirebaseError) {
         switch (error.code) {
@@ -115,7 +115,7 @@ export default function Login() {
               Forgot password?
             </Link>
             <Link variant="body2" href="/register">
-              {"Don't have an account? Sign Up"}
+              {"Don't have an account?"}
             </Link>
           </Box>
         </Box>

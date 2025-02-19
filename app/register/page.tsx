@@ -153,7 +153,7 @@ export default function Signup() {
               Forgot password?
             </Link>
             <Link variant="body2" href="/login">
-              {"Already have an account? Login"}
+              {"Already have an account?"}
             </Link>
           </Box>
         </Box>
