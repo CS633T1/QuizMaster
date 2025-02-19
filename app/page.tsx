@@ -149,35 +149,36 @@ export default function Home() {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         message={snackBarMsg}
       />
+      {!quizData && (
+        <Box sx={{ mb: 4 }}>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-      <Box sx={{ mb: 4 }}>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            label="Paste your text here to generate quiz questions"
+            variant="outlined"
+            disabled={loading}
+            sx={{ mb: 2 }}
+          />
 
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          label="Paste your text here to generate quiz questions"
-          variant="outlined"
-          disabled={loading}
-          sx={{ mb: 2 }}
-        />
-
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={handleSubmit}
-          disabled={loading || !inputText.trim()}
-        >
-          {loading ? <CircularProgress size={24} /> : "Generate Quiz"}
-        </Button>
-      </Box>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleSubmit}
+            disabled={loading || !inputText.trim()}
+          >
+            {loading ? <CircularProgress size={24} /> : "Generate Quiz"}
+          </Button>
+        </Box>
+      )}
       {quizData && quizData.questions && (
         <Box sx={{ mb: 4 }}>
           <Typography variant="h5" gutterBottom>
