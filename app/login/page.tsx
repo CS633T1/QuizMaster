@@ -36,7 +36,7 @@ export default function Login() {
       const res = await signIn(email, password);
       console.log("login!", res);
       // Redirect to dashboard (Past Quizzes) after login
-      router.push("/user/dashboard");
+      router.push("/");
     } catch (error) {
       if (error instanceof FirebaseError) {
         switch (error.code) {
