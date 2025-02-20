@@ -39,7 +39,8 @@ export default function Home() {
   const [score, setScore] = useState<number | null>(null);
   const [quizTitle, setQuizTitle] = useState<String>("");
   const [saveQuizModalOpen, setSaveQuizModalOpen] = useState<boolean>(false);
-  const [showTopicError, setShowTopicError] = useState<boolean>(false);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMsg, setAlertMsg] = useState<string>("");
 
   //For SnackBar
   const [isSnackBarOpen, setSnackBarOpen] = useState(false);
@@ -65,24 +66,38 @@ export default function Home() {
     if (!inputText.trim()) return;
 
     try {
-      console.log("Submitting text:", inputText);
-      setQuizData(null);
-      setSelectedAnswers({});
-      setShowResults(false);
-      setScore(null);
-      setShowTopicError(false);
-
-      const result = await submitQuestion(inputText);
-      console.log("Received result:", result);
-
-      if (result?.success && result.data?.questions) {
-        console.log("Setting quiz data:", result.data);
-        setQuizData(result.data);
-      } else if (result?.success && result.data?.["topic-error"] === "true") {
-        console.log("Topic error");
-        setShowTopicError(true);
+      // Check if input text is under 50000 characters
+      if (inputText.length > 50000) {
+        setAlertMsg(
+          "Text input is too long. Please enter a text that is less than 50,000 characters."
+        );
+        setShowAlert(true);
       } else {
-        throw new Error(result?.message || "Failed to generate quiz");
+        console.log("Submitting text:", inputText);
+        setQuizData(null);
+        setSelectedAnswers({});
+        setShowResults(false);
+        setScore(null);
+        setShowAlert(false);
+
+        const result = await submitQuestion(inputText);
+        console.log("Received result:", result);
+
+        if (result?.success && result.data?.questions) {
+          console.log("Setting quiz data:", result.data);
+          setQuizData(result.data);
+        } else if (result?.success && result.data?.["topic-error"] === "true") {
+          console.log("Topic error");
+          setAlertMsg(`Topic Error: Context must be related to one of the following
+            software topics: Globalization, Requirements, Software Engineering
+            Management, Software Configuration Management, Estimation, Agile,
+            Peer Reviews, Security, Design, Software Tools, System Test, Unit
+            Tests, Continuous Delivery, Process Architecture, or Process
+            Improvement.`);
+          setShowAlert(true);
+        } else {
+          throw new Error(result?.message || "Failed to generate quiz");
+        }
       }
     } catch (error) {
       console.error("Error submitting question:", error);
@@ -183,14 +198,9 @@ export default function Home() {
           {loading ? <CircularProgress size={24} /> : "Generate Quiz"}
         </Button>
 
-        {showTopicError && (
+        {showAlert && (
           <Alert severity="error" sx={{ mt: 2 }}>
-            Topic Error: Context must be related to one of the following
-            software topics: Globalization, Requirements, Software Engineering
-            Management, Software Configuration Management, Estimation, Agile,
-            Peer Reviews, Security, Design, Software Tools, System Test, Unit
-            Tests, Continuous Delivery, Process Architecture, or Process
-            Improvement.
+            {alertMsg}
           </Alert>
         )}
       </Box>
