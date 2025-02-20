@@ -35,6 +35,7 @@ export interface LLMResponse {
     options: string[];
     answer: number;
   }[];
+  "topic-error"?: string;
 }
 
 // Generic response wrapper
