@@ -96,7 +96,7 @@ const QuizTable = (props: QuizTableProps) => {
               <TableRow key={row.id}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.quizTitle}</TableCell>
-                <TableCell>{row.score}</TableCell>
+                <TableCell>{row.score}%</TableCell>
                 <TableCell>{row.userId}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Retake">
