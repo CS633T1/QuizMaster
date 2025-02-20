@@ -1,22 +1,12 @@
 # QuizMaster
 
-## Description
+## Project Scope
 
-TBD
+Develop an interactive text-based learning platform that transforms the course’s study material into engaging quizzes using LLM technology, allowing students to input their queries - and receive instantly generated multiple choice questions. With immediate feedback on answers and topic validation ensuring relevance to the course content, students can effectively test their knowledge and identify areas for review, making the studying process both more engaging and efficient.
 
-## Table of Contents
+## Project Positioning
 
-- [Technologies Used](#technologies-used)
-- [Screenshots](#screenshots)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Contributors](#contributors)
-- [Sources](#sources)
-- [Contact](#contact)
-
-## Technologies Used
-
-## Screenshots and Videos
+Our platform serves a focused purpose - delivering multiple-choice questions tailored to course content. Unlike Blackboard's comprehensive learning management features or ChatGPT's broad AI capabilities, we offer a streamlined quiz experience with curated questions that are categorized and saved for repeated practice. This specialized approach creates a personal repository of course-specific practice material.
 
 ## Getting Started
 
@@ -24,8 +14,6 @@ TBD
 2. Copy .env file from Discord channel to repo folder.
 3. Run `npm i`
 4. Run `npm run dev`
-
-## Usage
 
 ## Contributors
 
@@ -35,13 +23,3 @@ TBD
 - Tsz Ching Wong
 - Lin Gagliano
 - Cristian Reyes
-
-## Sources
-
-## Licensing
-
-## Contact
-
-For any questions or collaborations, please reach out to:
-
--
