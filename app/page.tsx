@@ -66,7 +66,6 @@ export default function Home() {
     if (!inputText.trim()) return;
 
     try {
-      // Check if input text is under 50000 characters
       if (inputText.length > 50000) {
         setAlertMsg(
           "Text input is too long. Please enter a text that is less than 50,000 characters."

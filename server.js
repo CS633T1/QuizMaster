@@ -1,6 +1,5 @@
 import next from "next";
 import express from "express";
-//import queryLLM from "./api/restrictQueryLLM.js";
 import queryLLM from "./api/queryLLM.js";
 
 const dev = process.env.NODE_ENV !== "production";

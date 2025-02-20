@@ -56,7 +56,7 @@ const jsonGPT = async (prompt) => {
         },
         { role: "user", content: instructions },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
     });
 
