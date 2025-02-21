@@ -42,13 +42,19 @@ export default function MenuAppBar() {
     },
     admin: {
       Home: "/",
-      Admin: "/user/adminpanel",
+      Admin: "/admin",
     },
   };
 
   // Based on some configurations, choose which navMap to render
-  const navMap = user !== null ? navMap_options?.user : navMap_options?.guest;
-
+  const navMap =
+    navMap_options?.[
+      user !== null
+        ? user.email === "admin@gmail.com"
+          ? "admin"
+          : "user"
+        : "guest"
+    ];
   const drawerWidth = 240;
 
   const handleDrawerToggle = () => {

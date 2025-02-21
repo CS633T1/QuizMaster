@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     NEXT_PUBLIC_FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
+  },
+  serverRuntimeConfig: {
+    private_key: process.env.FIREBASE_PRIVATE_KEY,
   },
   eslint: {
     ignoreDuringBuilds: true,

@@ -43,7 +43,7 @@ export default function UserSettings() {
   const handleDelete = async () => {
     console.log("Deleting account...");
     try {
-      await deleteAccount();
+      user && (await deleteAccount(user));
       router.push("/");
     } catch (error: any) {
       console.error("Error deleting account:", error);
