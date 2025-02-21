@@ -38,7 +38,7 @@ const QuizTable = (props: QuizTableProps) => {
   const [id, setId] = useState<string>("");
 
   const [newTitle, setNewTitle] = useState<string>("");
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<string>("");
   const dev = process.env.NODE_ENV !== "production";
   // API Base URL
   const base_url = dev
@@ -89,8 +89,8 @@ const QuizTable = (props: QuizTableProps) => {
   const handleCopy = async (id: string) => {
     try {
       await navigator.clipboard.writeText(base_url + `/quiz?quizId=${id}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset "copied" state after 2 seconds
+      setCopied(id);
+      setTimeout(() => setCopied(""), 2000); // Reset "copied" state after 2 seconds
     } catch (err) {
       console.error("Failed to copy:", err);
     }
@@ -147,7 +147,7 @@ const QuizTable = (props: QuizTableProps) => {
                     onClick={() => handleCopy(row.id)}
                     startIcon={<ContentCopyIcon />}
                   >
-                    {copied ? "Copied!" : "Copy Link"}
+                    {copied == row.id ? "Copied!" : "Copy Link"}
                   </Button>
                 </TableCell>
               </TableRow>
