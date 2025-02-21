@@ -1,4 +1,4 @@
-import jsonGPT from "./restrictQueryLLM.js";
+import restrictQueryLLM from "./restrictQueryLLM.js";
 
 const queryLLM = async (req, res) => {
   try {
@@ -13,9 +13,9 @@ const queryLLM = async (req, res) => {
       });
     }
 
-    console.log("Calling jsonGPT with prompt:", prompt);
-    const answer = await jsonGPT(prompt);
-    console.log("Received answer from jsonGPT:", answer);
+    console.log("Calling restrictQueryLLM with prompt:", prompt);
+    const answer = await restrictQueryLLM(prompt);
+    console.log("Received answer from restrictQueryLLM:", answer);
 
     if (!answer.success) {
       return res.status(500).json(answer);

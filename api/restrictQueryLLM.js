@@ -13,15 +13,17 @@ const openai = new OpenAI({
   apiKey: apiKey,
 });
 
-const jsonGPT = async (prompt) => {
+const restrictQueryLLM = async (prompt) => {
   try {
     console.log("Starting OpenAI API call with prompt:", prompt);
 
-    const instructions = `You are a quiz generator. Create a list of 10 multiple choice questions based on the provided text.
-        All questions must be related to one of the following software topics: Globalization, Requirements, Software Engineering Management,
+    const instructions = `You are a quiz generator. 
+        First check if the provided text is related to any of the following software topics: Globalization, Requirements, Software Engineering Management,
         Software Configuration Management, Estimation, Agile, Peer Reviews, Security, Design, Software Tools, System Test, Unit Tests,
-        Continuous Delivery, Process Architecture, or Process Improvement. If the provided text is not related to any of the topics, 
-        return an error message with a key of "topic-error" and a value of "true".
+        Continuous Delivery, Process Architecture, or Process Improvement. If it is not related to any of these topics, return an error message with a key of "topic-error" and a value of "true".
+        
+        If the text is related to a software topic, create a list of 10 multiple choice questions based on the provided text.
+        All questions must be related to one of the software topics mentioned above. 
         Return ONLY a JSON object in the following format, without any additional text or markdown:
         {
           "questions": [
@@ -44,7 +46,7 @@ const jsonGPT = async (prompt) => {
         3. Do not use markdown formatting
         4. Ensure the JSON is valid
         
-        Text to generate questions from: ${prompt}`;
+        PROVIDED TEXT: ${prompt}`;
 
     console.log("Sending instructions to OpenAI...");
 
@@ -56,7 +58,7 @@ const jsonGPT = async (prompt) => {
         },
         { role: "user", content: instructions },
       ],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
     });
 
@@ -94,4 +96,4 @@ const jsonGPT = async (prompt) => {
 };
 
 console.log("API Key present:", !!process.env.OPEN_AI_KEY);
-export default jsonGPT;
+export default restrictQueryLLM;
