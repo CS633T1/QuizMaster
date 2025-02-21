@@ -14,11 +14,13 @@ if (!admin.apps.length) {
 export async function GET() {
   try {
     const listUsersResult = await admin.auth().listUsers();
-    const users = listUsersResult.users.map((user) => ({
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName || "No Name",
-    }));
+    const users = listUsersResult.users
+      .map((user) => ({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "No Name",
+      }))
+      ?.filter((user) => user.email !== "admin@gmail.com");
 
     return NextResponse.json({ users }, { status: 200 });
   } catch (error) {

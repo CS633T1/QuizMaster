@@ -15,11 +15,6 @@ server.use(express.json());
 server.use("/", express.static("dist"));
 server.post("/api/query", queryLLM);
 
-// Simple endpoint to return "Hello, World!"
-server.get("/api/hello", (req, res) => {
-  res.send("Hello, World!");
-});
-
 // Start NextJS and server using the same port
 app.prepare().then(() => {
   server.all("*", (req, res) => {

@@ -30,6 +30,16 @@ export const saveNewQuiz = async (data: QuizData) => {
   return saveQuizRes;
 };
 
+export const deletePastQuizByUser = async (email: string) => {
+  const q = query(collection(db, "quizzes"), where("userId", "==", email));
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    console.log("delete the quiz", doc.id);
+    deleteQuiz(doc.id);
+  });
+};
+
 export const getPastQuiz = async (user: User) => {
   //db, collection, id
   const q = query(
@@ -48,6 +58,21 @@ export const getPastQuiz = async (user: User) => {
   });
 
   console.log(data);
+  return data;
+};
+
+// only admin should be able to do this
+export const getAllQuiz = async () => {
+  //db, collection, id
+  const q = query(collection(db, "quizzes"));
+  const querySnapshot = await getDocs(q);
+  let data: any[] = [];
+  querySnapshot.forEach((doc) => {
+    data?.push({
+      id: doc.id,
+      ...doc.data(),
+    });
+  });
   return data;
 };
 
