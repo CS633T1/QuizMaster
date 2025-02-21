@@ -1,4 +1,4 @@
-import jsonGPT from "./jsonGPT.js";
+import jsonGPT from "./restrictQueryLLM.js";
 
 const queryLLM = async (req, res) => {
   try {
